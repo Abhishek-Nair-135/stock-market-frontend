@@ -1,34 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import openSocket from 'socket.io-client';
+import React, { Component } from "react";
+import "./App.css";
+import One from "./components/cryptoOne";
+import Two from "./components/cryptoTwo";
+import { Switch, Route, NavLink, Redirect } from "react-router-dom";
+
+const adjustArrays = (array, data) => {
+  const tempArr = [...array, data];
+  if (tempArr.length > 20) tempArr.shift();
+
+  return tempArr;
+};
 
 class App extends Component {
-  state = {
-    stocks: []
-  }
-  componentDidMount(){
-   const socket = openSocket('http://localhost:4000');
-   socket.on('stock', data => {
-     let newStocks = [...this.state.stocks];
-     newStocks.push(data);
-     this.setState({
-      stocks: newStocks
-     })
-   })
-
-  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+        <h1 className="App-intro">React Market Watch</h1>
+          <NavLink className="nav-link" to="/Binance_BNBBTC">
+          Binance BNBBTC
+          </NavLink>
+          <NavLink className="nav-link" to="/Binance_BTCUSDT">
+          Binance BTCUSDT
+          </NavLink>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <h4>{this.state.stocks}</h4>
+        <Switch>
+          <Route
+            path="/Binance_BNBBTC"
+            component={() => <One adjustArrays={adjustArrays} />}
+          />
+          <Route
+            path="/Binance_BTCUSDT"
+            component={() => <Two adjustArrays={adjustArrays} />}
+          />
+          <Redirect to="/Binance_BNBBTC" />
+        </Switch>
       </div>
     );
   }
